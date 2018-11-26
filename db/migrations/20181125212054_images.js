@@ -1,11 +1,12 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('comments', (table) => {
+  return knex.schema.createTable('images', (table) => {
     table.increments();
-    table.text('comment');
-    table.integer('courts_id')
+    table.text('img_url');
+    table.string('location');
+    table.integer('user_id')
      .notNullable()
      .references('id')
-     .inTable('courts')
+     .inTable('users')
      .onDelete('CASCADE')
      .index();
     table.timestamps(true, true);
@@ -14,5 +15,5 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('comments')
+  return knex.schema.dropTable('images')
 };
