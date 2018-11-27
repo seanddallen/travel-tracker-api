@@ -4,8 +4,13 @@ exports.up = function(knex, Promise) {
     table.increments();
     table.string('title');
     table.string('content');
-    table.string('location');
     table.date('date');
+    table.integer('location_id')
+      .notNullable()
+      .references('id')
+      .inTable('locations')
+      .onDelete('CASCADE')
+      .index();
     table.integer('user_id')
       .notNullable()
       .references('id')

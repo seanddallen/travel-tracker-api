@@ -1,62 +1,99 @@
 module.exports = function(app){
 
-  // app.get('/books/:id', (req, res) => {
-  //   const book = db.books.find(req.params.id)
-  //   res.json(book)
-  // })
-  //
-  // app.post('/books', (req, res) => {
-  //   const newBook = db.books.insert({
-  //     "title": req.body.title,
-  //     "subtitle": req.body.subtitle,
-  //     "author": req.body.author,
-  //     "inCart": false
-  //   })
-  //   res.json(newBook)
-  // })
+  ////////////////// MASTER GET /////////////////////
+  app.get('/dashboard', (req, res) => {
+    knex('users')
+    knex('locations').where('user_id', users.id)
+    knex('buckets').where('user_id', users.id)
+    knex('posts').where('user_id', users.id)
+    knex('images').where('user_id', users.id)
 
-////////////////// USERS ROUTES /////////////////////
+    res.json(data)
+  })
 
+  ////////////////// USERS ROUTES /////////////////////
+  app.post('/login', (req, res) => {
+    res.json(book)
+  })
 
-////////////////// BUCKETS ROUTES ///////////////////
+  app.post('/logout', (req, res) => {
+    res.json(book)
+  })
 
+  app.post('/register', (req, res) => {
+    knex('users').insert({
+      "user_name": req.body.name,
+      "email": req.body.email,
+      "password": req.body.password,
+    })
+    res.json(newUser)
+  })
 
-////////////////// POSTS ROUTES /////////////////////
+  ////////////////// BUCKETS ROUTES ///////////////////
+  app.post('/buckets/create', (req, res) => {
+    knex('buckets')
+      .where('user_id', users.id)
+      .where('location_id', locations.id)
+      .insert({
+        "bucket_name": req.body.name,
+        "description": req.body.description,
+        "date_completed": req.body.date_completed,
+        "location_id": req.body.location_id,
+        "user_id": req.body.user_id,
+      })
+    res.json(newBucket)
+  })
 
+  app.delete('/buckets/delete', (req, res) => {
+    knex('buckets')
+      .where('id', req.params.id)
+      .del()
+  })
 
-  app.get('/', users.loginPage); //COMPLETE
-  app.post('/login', users.login); //COMPLETE
-  app.post('/register', users.create); //COMPLETE
-  app.get('/logout', users.logout); //COMPLETE
+  app.patch('/buckets/complete', (req, res) => {
+    knex('buckets')
+      .where('id', req.params.id)
+      .update({
+        "is_completed": true,
+      })
+  })
 
-  app.use(authMiddleware);
+  ////////////////// POSTS ROUTES /////////////////////
+  app.post('/posts/create', (req, res) => {
+    knex('posts')
+      .where('user_id', users.id)
+      .where('location_id', locations.id)
+      .insert({
+        "title": req.body.title,
+        "content": req.body.content,
+        "date": req.body.date,
+        "location_id": req.body.location_id,
+        "user_id": req.body.user_id,
+      })
+    res.json(newPost)
+  })
 
-  app.get('/courts', courts.courtsPage); //COMPLETE
-  app.get('/courts/city/:city', courts.search); //COMPLETE
+  app.delete('/posts/delete', (req, res) => {
+    knex('posts')
+      .where('id', req.params.id)
+      .del()
+  })
 
-  app.post('/courts/create', courts.createCourt); //COMPLETE
-  app.post('/courts/vote/:id', votes.courtVote); //COMPLETE
+  ////////////////// IMAGES ROUTES /////////////////////
+  app.post('/images/upload', (req, res) => {
+    knex('images')
+      .where('user_id', users.id)
+      .where('location_id', locations.id)
+      .insert({
+        "img_url": req.body.img_url,
+      })
+    res.json(newImage)
+  })
 
-  app.get('/courts/:id', courts.courtPage); //COMPLETE
-  app.get('/courts/games/:id', courts.games); //COMPLETE
-  app.get('/courts/location/:id', courts.location);
-  app.get('/courts/comments/:id', courts.comments); //COMPLETE
+  app.delete('/images/delete', (req, res) => {
+    knex('images')
+      .where('id', req.params.id)
+      .del()
+  })
 
-  app.post('/courts/comments/newcomment/:id', comments.newComment); //COMPLETE
-  app.post('/games/create/:id', games.createGame); //COMPLETE
-
-  app.get('/courts/images/:id', images.imagesPage); //COMPLETE
-  app.post('/courts/images/upload/:id', images.upload); //COMPLETE
-
-
-}
-
-
-
-const authMiddleware = (req, res, next) => {
-  if(!req.session.user_id){
-    res.redirect('/');
-  }else{
-    next();
-  }
 }

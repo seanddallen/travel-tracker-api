@@ -4,8 +4,14 @@ exports.up = function(knex, Promise) {
     table.increments();
     table.string('bucket_name');
     table.string('description');
-    table.string('location');
+    table.boolean('is_complete').defaultTo(false);
     table.date('date_completed');
+    table.integer('location_id')
+      .notNullable()
+      .references('id')
+      .inTable('locations')
+      .onDelete('CASCADE')
+      .index();
     table.integer('user_id')
       .notNullable()
       .references('id')

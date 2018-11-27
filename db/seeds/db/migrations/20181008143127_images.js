@@ -2,16 +2,10 @@ exports.up = function(knex, Promise) {
   return knex.schema.createTable('images', (table) => {
     table.increments();
     table.text('img_url');
-    table.integer('location_id')
+    table.integer('courts_id')
      .notNullable()
      .references('id')
-     .inTable('locations')
-     .onDelete('CASCADE')
-     .index();
-    table.integer('user_id')
-     .notNullable()
-     .references('id')
-     .inTable('users')
+     .inTable('courts')
      .onDelete('CASCADE')
      .index();
     table.timestamps(true, true);
